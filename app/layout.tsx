@@ -38,6 +38,12 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="float" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="mobile-web-app-capable" content="yes" />
+        <style>{`#nl-badge,[id^="nl-badge"]{display:none!important}`}</style>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){function kill(){try{var n=document.querySelectorAll('#nl-badge,[id^="nl-badge"],iframe[src*="netlify"]');for(var i=0;i<n.length;i++){n[i].parentNode&&n[i].parentNode.removeChild(n[i]);}}catch(e){}}kill();setInterval(kill,1200);document.addEventListener('DOMContentLoaded',kill);})();`,
+          }}
+        />
       </head>
       <body>
         <PWAManifestInjector />
