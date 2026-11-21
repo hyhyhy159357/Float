@@ -38,10 +38,11 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="float" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="mobile-web-app-capable" content="yes" />
-        <style>{`#nl-badge,[id^="nl-badge"]{display:none!important}`}</style>
+        {/* 去掉 Netlify 免费版强制注入的 Powered by Netlify 徽标（外层 iframe id = nl-badge-frame） */}
+        <style>{`#nl-badge-frame,#nl-badge,#nl-hud-frame{display:none!important;visibility:hidden!important}`}</style>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){function kill(){try{var n=document.querySelectorAll('#nl-badge,[id^="nl-badge"],iframe[src*="netlify"]');for(var i=0;i<n.length;i++){n[i].parentNode&&n[i].parentNode.removeChild(n[i]);}}catch(e){}}kill();setInterval(kill,1200);document.addEventListener('DOMContentLoaded',kill);})();`,
+            __html: `(function(){function kill(){try{var ids=['nl-badge-frame','nl-badge','nl-hud-frame'];for(var i=0;i<ids.length;i++){var e=document.getElementById(ids[i]);if(e&&e.parentNode){e.parentNode.removeChild(e);}}var f=document.querySelectorAll('iframe');for(var k=0;k<f.length;k++){var s=f[k].getAttribute('srcdoc')||'';if(s.indexOf('Netlify')>=0&&f[k].parentNode){f[k].parentNode.removeChild(f[k]);}}}catch(err){}}kill();try{new MutationObserver(kill).observe(document.documentElement,{childList:true,subtree:true});}catch(err){}setInterval(kill,1000);document.addEventListener('DOMContentLoaded',kill);})();`,
           }}
         />
       </head>
