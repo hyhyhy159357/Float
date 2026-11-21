@@ -1,0 +1,40 @@
+name: Build Signed Shell APK
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: "8.7"
+
+      - name: Generate keystore
+        run: |
+          keytool -genkeypair -v -keystore "$RUNNER_TEMP/shell.keystore" \
+            -storepass floatphone -keypass floatphone -alias floatshell \
+            -keyalg RSA -keysize 2048 -validity 10000 \
+            -dname "CN=Float Shell, OU=Self, O=Self, L=CN, ST=CN, C=CN"
+
+      - name: Build APKs with signing
+        env:
+          SHELL_KEYSTORE_FILE: ${{ runner.temp }}/shell.keystore
+          SHELL_KEYSTORE_PASSWORD: floatphone
+          SHELL_KEY_ALIAS: floatshell
+          SHELL_KEY_PASSWORD: floatphone
+          SHELL_SITE_URL: https://float-phone-tfi188.netlify.app
+        run: gradle -p android-shell assembleDebug assembleRelease
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: float-shell-signed
+          path: android-shell/app/build/outputs/apk/**/*.apk
