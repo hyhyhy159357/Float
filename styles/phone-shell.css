@@ -1455,3 +1455,16 @@
 .folder-dots .dot.active {
   background: color-mix(in srgb, var(--c-home-label, #ffffff) 85%, transparent);
 }
+
+/* ── 翻页流畅性优化 ────────────────────────────────────────────────
+   拖动翻页时，页面里大量元素的 backdrop-filter 毛玻璃会迫使 WebView
+   每一帧重新采样背景，这是左滑/右滑卡顿的主因。拖动期间关掉模糊并把
+   常驻动画暂停，松手立刻恢复，视觉上只在滑动瞬间失去磨砂感。
+   ──────────────────────────────────────────────────────────────── */
+.phone-swipe-layer.phone-swipe-dragging *,
+.phone-swipe-layer.phone-swipe-dragging *::before,
+.phone-swipe-layer.phone-swipe-dragging *::after {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  animation-play-state: paused !important;
+}
